@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./style.css";
 import VideoPlayer from "./components/VideoPlayer";
 import FileSelector from "./components/FileSelector";
 

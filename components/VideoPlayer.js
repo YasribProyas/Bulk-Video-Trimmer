@@ -1,10 +1,11 @@
 import videojs from "video.js";
 import { saveAs } from "file-saver";
 
+// const markers = { start: null, end: null };
+export const markers = { start: null, end: null };
 export default function VideoPlayer() {
 
   const player = videojs("my-video");
-  let markers = { start: null, end: null };
 
   document.getElementById("mark-start").addEventListener("click", () => {
     updateMarkers(player.currentTime(), "start");
@@ -24,6 +25,8 @@ export default function VideoPlayer() {
     exportMarkers(markers);
   });
 
+
+
   function exportMarkers(exportedMarkers) {
     const ffmpegScript = `ffmpeg -i input.mp4 -ss ${exportedMarkers.start} -to ${exportedMarkers.end} -c copy output.mp4`;
     const blob = new Blob([ffmpegScript], { type: "text/plain;charset=utf-8" });
@@ -41,17 +44,17 @@ export default function VideoPlayer() {
     if (markers.end) addMarker(markers.end, 'end');
   }
   function updateMarkers(time, type) {
-    const requestedTime = Math.round(time * 100) / 100
+    const requestedTime = Math.round(time * 1000) / 1000
     if (type == "start") {
       let distance = markers.start - requestedTime;
       markers.start = requestedTime;
       if (markers.end && markers.end < markers.start) markers.end = markers.end - distance;
-      if (markers.end > player.duration()) markers.end = player.duration();
+      if (markers.end > player.duration()) markers.end = null;
       // console.log(markers.end, markers.start, player.duration());
     }
     else if (type == "end") {
       let distance = markers.end - requestedTime;
-      markers.end = requestedTime;
+      markers.end = time == player.duration() ? null : requestedTime;
       if (markers.start && markers.start > markers.end) markers.start = markers.start - distance;
       if (markers.start < 0) markers.start = 0.0;
 
