@@ -1,12 +1,12 @@
 import videojs from "video.js";
-import { markers } from "./VideoPlayer.js";
+import { markers, reRenderMarkers } from "./VideoPlayer.js";
 import { UnDecidedVideoListItem, DecidedVideoListItem } from "./VideoListItem.js";
+import { exportCSV } from "./ExportLogic.js";
 
 export const fileListArr = [];
+export const decidedListArr = [];
 
 export default function FileSelector() {
-
-
   document
     .getElementById("select-folder")
     .addEventListener("click", async () => {
@@ -43,17 +43,21 @@ export default function FileSelector() {
   document.getElementById("add-list").addEventListener("click", () => {
     const index = videoName.getAttribute("data-index");
     const videoListObj = new DecidedVideoListItem(videoName.innerText, fileListArr[index].file, index, markers);
+    decidedListArr.push(videoListObj);
 
     videoListObj.htmlElement.addEventListener("click", () => loadVideo(fileListArr[index].file, index));
-
     decidedFileList.appendChild(videoListObj.htmlElement);
+  });
+
+  document.getElementById("export-markers").addEventListener("click", () => {
+    exportCSV(decidedListArr);
   });
 
 
   async function loadVideo(file, index) {
     markers.start = null;
     markers.end = null;
-    console.log(markers);
+    reRenderMarkers();
     videoName.innerText = file.name;
     videoName.setAttribute("data-index", index);
 
