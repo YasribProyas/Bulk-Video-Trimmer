@@ -1,10 +1,11 @@
 import videojs from "video.js";
 import { markers } from "./VideoPlayer.js";
+import { UnDecidedVideoListItem, DecidedVideoListItem } from "./VideoListItem.js";
 
+export const fileListArr = [];
 
 export default function FileSelector() {
 
-  const fileListArr = []
 
   document
     .getElementById("select-folder")
@@ -19,16 +20,15 @@ export default function FileSelector() {
         if (!entry.name.endsWith(".mp4")) continue;
         // console.log(await entry.getFileHandle());
         if (entry.kind === "file") {
+
           const file = await entry.getFile();
-          fileListArr.push(file);
-          // const listItem = document.createElement("div");
-          // const listItem = document.createElement("li");
-          const listItem = listItemGenetor(file.name, counter);
-          // console.log(listItem);
-          // listItem.textContent = file.name;
-          listItem.addEventListener("click", () => loadVideo(file, listItem.getAttribute("data-index")));
-          fileList.appendChild(listItem);
+          const videoListObj = new UnDecidedVideoListItem(file.name, file, counter);
+          videoListObj.htmlElement.addEventListener("click", () => loadVideo(file, videoListObj.index));
+          fileListArr.push(videoListObj);
+
+          fileList.appendChild(videoListObj.htmlElement);
           counter++;
+
         }
         // break;
       }
@@ -42,11 +42,13 @@ export default function FileSelector() {
 
   document.getElementById("add-list").addEventListener("click", () => {
     const index = videoName.getAttribute("data-index");
-    const listItem = decidedListItemGenetor(videoName.innerText, index);
-    listItem.addEventListener("click", () => loadVideo(fileListArr[index], index));
+    const videoListObj = new DecidedVideoListItem(videoName.innerText, fileListArr[index].file, index, markers);
 
-    decidedFileList.appendChild(listItem);
+    videoListObj.htmlElement.addEventListener("click", () => loadVideo(fileListArr[index].file, index));
+
+    decidedFileList.appendChild(videoListObj.htmlElement);
   });
+
 
   async function loadVideo(file, index) {
     markers.start = null;
@@ -66,6 +68,22 @@ export default function FileSelector() {
 
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   function listItemGenetor(name, index, type = "unDecided") {
     const listItem = document.createElement("li");
     listItem.classList.add("list-group-item");
@@ -74,10 +92,10 @@ export default function FileSelector() {
           ${type == "unDecided" ? '<span class="badge text-bg-secondary">0</span>' : ''}
           <span class="name">${name}</span>`;
     return listItem;
-    // `<li class="list-group-item">
+    // <li class="list-group-item">
     //       <span class="badge text-bg-secondary">0</span>
     //       <span class="name">${name}</span>
-    // </li>`
+    // </li>
   }
 
   function decidedListItemGenetor(name, index) {
