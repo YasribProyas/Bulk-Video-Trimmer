@@ -1,7 +1,7 @@
 import videojs from "video.js";
 import { markers, reRenderMarkers } from "./VideoPlayer.js";
 import { UnDecidedVideoListItem, DecidedVideoListItem } from "./VideoListItem.js";
-import { exportCSV } from "./ExportLogic.js";
+import { exportCSV, exportSH } from "./ExportLogic.js";
 
 export const fileListArr = [];
 export const decidedListArr = [];
@@ -49,8 +49,11 @@ export default function FileSelector() {
     decidedFileList.appendChild(videoListObj.htmlElement);
   });
 
-  document.getElementById("export-markers").addEventListener("click", () => {
+  document.getElementById("export-markers-csv").addEventListener("click", () => {
     exportCSV(decidedListArr);
+  });
+  document.getElementById("export-markers-sh").addEventListener("click", () => {
+    exportSH(decidedListArr);
   });
 
 
