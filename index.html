@@ -44,6 +44,9 @@
           <button class="btn btn-outline-primary" id="mark-end">Mark End</button>
         </div>
         <div class="btn-group" role="group">
+          <button class="btn btn-outline-danger" id="add-list-delete">
+            Schedule for deletion
+          </button>
           <button class="btn btn-outline-success" id="add-list">
             Add to list
           </button>
@@ -59,7 +62,6 @@
         Export SH
       </button>
       <ul id="decided-file-list-ul" class="list-group">
-
       </ul>
     </div>
 
@@ -68,6 +70,11 @@
   <script src="https://vjs.zencdn.net/8.12.0/video.min.js"></script>
   <script>
     var player = videojs('my-video');
+    function deleteByDataIndex(dataIndex) {
+      let list = document.querySelector(`li.list-group-item.undecided[data-index="${dataIndex}"]`);
+      console.log(list);
+      list.remove();
+    }
   </script>
 </body>
 

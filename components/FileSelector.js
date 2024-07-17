@@ -1,10 +1,10 @@
 import videojs from "video.js";
 import { markers, reRenderMarkers } from "./VideoPlayer.js";
-import { UnDecidedVideoListItem, DecidedVideoListItem } from "./VideoListItem.js";
+import { UnDecidedVideoListItem, DecidedVideoListItem, DecidedDeleteListItem } from "./VideoListItem.js";
 import { exportCSV, exportSH } from "./ExportLogic.js";
 
 export const fileListArr = [];
-export const decidedListArr = [];
+export let decidedListArr = [];
 
 export default function FileSelector() {
   document
@@ -48,6 +48,14 @@ export default function FileSelector() {
     videoListObj.htmlElement.addEventListener("click", () => loadVideo(fileListArr[index].file, index));
     decidedFileList.appendChild(videoListObj.htmlElement);
   });
+  document.getElementById("add-list-delete").addEventListener("click", () => {
+    const index = videoName.getAttribute("data-index");
+    const videoListObj = new DecidedDeleteListItem(videoName.innerText, fileListArr[index].file, index);
+    decidedListArr.push(videoListObj);
+
+    videoListObj.htmlElement.addEventListener("click", () => loadVideo(fileListArr[index].file, index));
+    decidedFileList.appendChild(videoListObj.htmlElement);
+  });
 
   document.getElementById("export-markers-csv").addEventListener("click", () => {
     exportCSV(decidedListArr);
@@ -75,58 +83,9 @@ export default function FileSelector() {
 
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  function listItemGenetor(name, index, type = "unDecided") {
-    const listItem = document.createElement("li");
-    listItem.classList.add("list-group-item");
-    listItem.setAttribute("data-index", index);
-    listItem.innerHTML = `
-          ${type == "unDecided" ? '<span class="badge text-bg-secondary">0</span>' : ''}
-          <span class="name">${name}</span>`;
-    return listItem;
-    // <li class="list-group-item">
-    //       <span class="badge text-bg-secondary">0</span>
-    //       <span class="name">${name}</span>
-    // </li>
-  }
-
-  function decidedListItemGenetor(name, index) {
-    const listItem = document.createElement("li");
-    listItem.classList.add("list-group-item", "d-flex", "flex-row", "justify-content-between");
-    listItem.setAttribute("data-index", index);
-    listItem.setAttribute("data-start", markers.start);
-    listItem.setAttribute("data-end", markers.end);
-
-    listItem.innerHTML = `
-      <span class="name">${name}</span>
-      <span class="times">
-        <span class="start-time border-end pe-1">${markers.start || "Start"}</span>
-        <span class="end-time">${markers.end || "End"}</span>
-      </span>`;
-    return listItem;
-
-    // <li class="list-group-item d-flex flex-row justify-content-between">
-    //   <span class="name">Lorem ipsum dolor sit amet</span>
-    //   <span class="times">
-    //     <span class="start-time border-end pe-1">00:00</span>
-    //     <span class="end-time">00:00</span>
-    //   </span>
-    // </li>
-  }
 }
 
+export function decidedListArrDeleteByDataIndex(_index) {
+  decidedListArr = decidedListArr.filter((e) => e.index != _index);
+  console.log(decidedListArr);
+}

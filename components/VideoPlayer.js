@@ -36,11 +36,8 @@ export default function VideoPlayer() {
       markers.end = time == player.duration() ? null : requestedTime;
       if (markers.start && markers.start > markers.end) markers.start = markers.start - distance;
       if (markers.start < 0) markers.start = 0.0;
-
     }
-
   }
-
 }
 
 export function reRenderMarkers() {
