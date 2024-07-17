@@ -1,6 +1,6 @@
 import videojs from "video.js";
 import { markers, reRenderMarkers } from "./VideoPlayer.js";
-import { UnDecidedVideoListItem, DecidedVideoListItem, DecidedDeleteListItem } from "./VideoListItem.js";
+import { VideoListItem, TrimVideoListItem, DeleteVideoListItem } from "./VideoListItem.js";
 import { exportCSV, exportSH } from "./ExportLogic.js";
 
 export const fileListArr = [];
@@ -22,7 +22,7 @@ export default function FileSelector() {
         if (entry.kind === "file") {
 
           const file = await entry.getFile();
-          const videoListObj = new UnDecidedVideoListItem(file.name, file, counter);
+          const videoListObj = new VideoListItem(file, counter);
           videoListObj.htmlElement.addEventListener("click", () => loadVideo(file, videoListObj.index));
           fileListArr.push(videoListObj);
 
@@ -42,7 +42,8 @@ export default function FileSelector() {
 
   document.getElementById("add-list").addEventListener("click", () => {
     const index = videoName.getAttribute("data-index");
-    const videoListObj = new DecidedVideoListItem(videoName.innerText, fileListArr[index].file, index, markers);
+    console.log(1, markers);
+    const videoListObj = new TrimVideoListItem(fileListArr[index].file, index, markers);
     decidedListArr.push(videoListObj);
 
     videoListObj.htmlElement.addEventListener("click", () => loadVideo(fileListArr[index].file, index));
@@ -50,7 +51,7 @@ export default function FileSelector() {
   });
   document.getElementById("add-list-delete").addEventListener("click", () => {
     const index = videoName.getAttribute("data-index");
-    const videoListObj = new DecidedDeleteListItem(videoName.innerText, fileListArr[index].file, index);
+    const videoListObj = new DeleteVideoListItem(fileListArr[index].file, index);
     decidedListArr.push(videoListObj);
 
     videoListObj.htmlElement.addEventListener("click", () => loadVideo(fileListArr[index].file, index));
